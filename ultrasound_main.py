@@ -20,6 +20,12 @@ def parse_main():
                      type=str,
                      default="bmode.json")
 
+    par.add_argument("--rf_filename",
+                     dest="rf_filename",
+                     help="RF binary filename",
+                     type=str,
+                     default="rfdat.bin")
+
     args = par.parse_args()
 
     return args
