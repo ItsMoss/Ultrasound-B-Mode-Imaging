@@ -32,7 +32,7 @@ def read_rffile(rffile):
     with open(rffile,'rb') as file:
         data = file.read(2)
         while data:
-            rf = int.from_bytes(data, byteorder = 'big', signed=True)
+            rf = int.from_bytes(data, byteorder = 'little', signed=True)
             rfdata.append(rf)
             data = file.read(2)
 
