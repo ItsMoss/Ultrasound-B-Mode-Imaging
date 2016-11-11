@@ -1,3 +1,39 @@
+def remove_nans(a_list):
+    """
+    This function makes sure that all values within the input list are integers
+    If a NaN occurs linear interpolation is attempted, and if that fails the
+    value is set to 0
+
+    :param list a_list: a list
+    :return list int_list: list without any NaN's
+    """
+
+    # Firstly, let's check that the length of the list is greater than 2
+    if len(a_list) < 3:
+        errormsg = "This list is too small. Length=%d\n" % len(a_list)
+        print(errormsg)
+        raise IndexError
+
+    # Now let's check all values excluding the first and last indices
+    for i, v in enumerate(a_list):
+        if i == 0 or i == len(a_list) - 1:
+            continue
+        if type(v) != int:
+            low = a_list[i-1]
+            hi = a_list[i+1]
+            a_list[i] = myAverage(low, hi)
+
+    # Lastly, let's check the first and last indices
+    if type(a_list[0]) != int:
+        a_list[0] = a_list[1]
+    if type(a_list[-1]) != int:
+        a_list[-1] = a_list[-2]
+
+    int_list = a_list
+
+    return int_list
+
+
 def myAverage(n1, n2):
     """
     This function calculates the average of two integers
