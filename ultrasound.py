@@ -1,16 +1,17 @@
-# File for all function definitions used in ultrasound_main.py
+import helpers as helps
+
 
 def read_jsonfile(infile):
-    """ Read data parameters from json file
+    """
+    Read data parameters from json file
 
-    :param infile: input json filename (str)
+    :param str infile: input json filename
     :returns: c, fs, axial_samples, beam_spacing, num_beams
     """
-
-    import json
+    from json import load
 
     with open(infile) as file:
-        params = json.load(file)
+        params = load(file)
 
     c = params['c']
     fs = params['fs']
@@ -20,20 +21,31 @@ def read_jsonfile(infile):
 
     return c, fs, axial_samples, beam_spacing, num_beams
 
-def read_rffile(rffile):
-    """ Read RF data from binary file
 
-    :param rffile: input rf binary filename (str)
-    :returns: rfdata
+def read_rf(rf_file, size, byte_it):
     """
+    Reads a single axial beam of RF data from binary file.
 
-    rfdata = []
+    :param str rf_file: input binary file name
+    :param int size: the amount samples that make up a single beam
+    :param int byte_it: iterator that marks where bytes should be read from
+    :return array beam: a single beam of RF data from shallow to deep
+    :return int byte_it: updtated iterator based on number of bytes read (is \
+    -1 if error occurs or EOF reached while reading in data)
+    """
+    import struct as struct
 
-    with open(rffile,'rb') as file:
-        data = file.read(2)
-        while data:
-            rf = int.from_bytes(data, byteorder = 'little', signed=True)
-            rfdata.append(rf)
-            data = file.read(2)
+    beam = [0 for x in range(size)]
 
-    return rfdata
+    with open(rf_file, 'rb') as f:
+        f.seek(byte_it)
+        for i in range(size):
+            try:
+                beam[i] = struct.unpack('<h', f.read(2))[0]
+                byte_it += 2
+            except struct.error:
+                print("Input RF file error! Reached EOF before amount of data \
+                specified in input JSON file could be read in.\n")
+                return beam, -1
+
+    return helps.remove_nans(beam), byte_it
