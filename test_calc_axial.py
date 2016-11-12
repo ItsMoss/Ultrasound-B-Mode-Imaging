@@ -14,5 +14,5 @@ def test_calc_axial():
     assert total_depth2 == 0.09
 
     [ax3, total_depth3] = us.calc_axial_position(1, 0, 10)
-    assert ax1 == 0.0
-    assert total_depth1 == 0.0
+    assert ax3 == 0.0
+    assert total_depth3 == 0.0

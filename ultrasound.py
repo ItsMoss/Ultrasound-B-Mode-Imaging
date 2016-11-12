@@ -109,3 +109,32 @@ def calc_lat_position(beam_spacing, num_beams):
     total_lateral = float(beam_spacing*num_beams)
 
     return lateral, total_lateral
+
+def calc_axial_position(c, fs, axial_samples):
+    """
+    Calculate axial position and length
+
+    :param c: souns speed (m/s)
+    :param fs: sampling frequency (Hz)
+    :param axial_samples: number of samples in depth
+    :returns: axial (list), total_depth (float)
+    """
+
+    import numpy as np
+
+    try:
+        delta_t = 1/fs
+    except ZeroDivisionError:
+        print('Input Parameter Error! Improbable sampling frequency')
+        return 0.0, 0.0
+
+    distance_btw_sample = c*delta_t
+
+    start_position = 0
+    end_position = distance_btw_sample*(axial_samples)
+    ax = np.arange(start_position, end_position, distance_btw_sample)
+    axial = ax.tolist()
+
+    total_depth = float((axial_samples-1)*distance_btw_sample)
+
+    return axial, total_depth
