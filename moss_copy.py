@@ -50,3 +50,14 @@ def read_rf(rf_file, size, byte_it):
                 return beam, -1
 
     return helps.remove_nans(beam), byte_it
+
+
+def init_matrix(x_len, y_len):
+    """
+    Initializes a 2-dimensional matrix with all values equal to 0
+
+    :param int x_len: x-axis length (i.e. number of columns)
+    :param int y_len: y-axis length (i.e. number of rows)
+    :return list: 2-D matrix with all values initialized to 0
+    """
+    return [[0 for x in range(x_len)] for y in range(y_len)]
