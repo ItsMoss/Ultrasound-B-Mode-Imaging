@@ -88,3 +88,24 @@ def parse_main():
     args = par.parse_args()
 
     return args
+
+
+def calc_lat_position(beam_spacing, num_beams):
+    """
+    Calculate lateral position and length
+
+    :param beam_spacing: spacing between lateral beams (m)
+    :param num_beams: number of lateral beams
+    :returns: lateral (list), total_lateral (float)
+    """
+
+    import numpy as np
+
+    start_position = -((num_beams-1)/2)*beam_spacing
+    end_position = ((num_beams)/2)*beam_spacing
+    lat = np.arange(start_position, end_position, beam_spacing)
+    lateral = list(lat)
+
+    total_lateral = float(beam_spacing*num_beams)
+
+    return lateral, total_lateral
