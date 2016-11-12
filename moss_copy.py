@@ -61,3 +61,25 @@ def init_matrix(x_len, y_len):
     :return list: 2-D matrix with all values initialized to 0
     """
     return [[0 for x in range(x_len)] for y in range(y_len)]
+
+
+def rect(beam, rtype='full'):
+    """
+    Rectifies a beam of RF data
+
+    :param list beam: a single beam of RF data
+    :param str rtype: type of rectification to be done (full or half)
+    :return list beam: rectified beam of RF data
+    """
+    if rtype == 'full':
+        for i, v in enumerate(beam):
+            beam[i] = abs(v)
+    elif rtype == 'half':
+        for i, v in enumerate(beam):
+            if v < 0:
+                beam[i] = 0
+    else:
+        print("Invalid param rtype. Value must be 'full' or 'half'.\n")
+        raise ValueError
+
+    return beam
