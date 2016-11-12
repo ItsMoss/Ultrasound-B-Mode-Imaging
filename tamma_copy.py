@@ -1,5 +1,6 @@
 # File for all function definitions used in ultrasound_main.py
 
+
 def read_jsonfile(infile):
     """ Read data parameters from json file
 
@@ -20,6 +21,7 @@ def read_jsonfile(infile):
 
     return c, fs, axial_samples, beam_spacing, num_beams
 
+
 def read_rffile(rffile):
     """ Read RF data from binary file
 
@@ -29,14 +31,15 @@ def read_rffile(rffile):
 
     rfdata = []
 
-    with open(rffile,'rb') as file:
+    with open(rffile, 'rb') as file:
         data = file.read(2)
         while data:
-            rf = int.from_bytes(data, byteorder = 'little', signed=True)
+            rf = int.from_bytes(data, byteorder='little', signed=True)
             rfdata.append(rf)
             data = file.read(2)
 
     return rfdata
+
 
 def calc_lat_position(beam_spacing, num_beams):
     """
@@ -57,6 +60,7 @@ def calc_lat_position(beam_spacing, num_beams):
     total_lateral = float(beam_spacing*num_beams)
 
     return lateral, total_lateral
+
 
 def calc_axial_position(c, fs, axial_samples):
     """
@@ -87,3 +91,25 @@ def calc_axial_position(c, fs, axial_samples):
 
     return axial, total_depth
 
+
+def log_comp(env_line):
+    """
+    Perform logarithmic compression on envelope line
+
+    :param env_line: envelope of rf line (list)
+    :returns: log_line (list)
+    """
+
+    import numpy as np
+
+    data = [abs(x) for x in env_line]
+
+    for i, j in enumerate(data):
+        if j == 0:
+            print('Warning! Might encounter incorrect data from '
+                  'taking logarithmic calculation of zero')
+            data[i] = 1
+
+    log_line = np.log10(data)
+
+    return log_line
