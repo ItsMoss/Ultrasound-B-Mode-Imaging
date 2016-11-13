@@ -142,7 +142,7 @@ def numpy2list(input_numpy):
     return output_list
 
 
-def makeSine(time, amplitude, frequency, phase=0):
+def makeSine(time, amplitude, frequency, phase=0, t_step=0.01, plot=False):
     """
     This function is for creating sine waves of varying time, amplitude, freq,
     and phase for simulating input signals
@@ -150,11 +150,12 @@ def makeSine(time, amplitude, frequency, phase=0):
     :param int time: time in seconds for sine curve
     :param int amplitude: amplitude of sine curve
     :param int frequency: frequency of sine curve in Hz
+    :param float t_step: time step between samples
     :param int phase: phase of sine curve in radians
     :return array curve: calculated sine curve
     """
     from numpy import sin, pi, arange
-    t = arange(0, time, 0.01)
+    t = arange(0, time, t_step)
     a = amplitude
     f = frequency
     p = phase
@@ -163,15 +164,16 @@ def makeSine(time, amplitude, frequency, phase=0):
     for p in range(len(curve)):
         curve[p] = round(curve[p], 2)
 
-#    from matplotlib.pyplot import figure, plot, show
-#    figure(1)
-#    plot(t, curve)
-#    show()
+    if plot is True:
+        from matplotlib.pyplot import figure, plot, show
+        figure(1)
+        plot(t, curve)
+        show()
 
     return curve
 
 
-def makeCosine(time, amplitude, frequency, phase=0):
+def makeCosine(time, amplitude, frequency, phase=0, t_step=0.01, plot=False):
     """
     This function is for creating cosine wave of varying time, amplitude, freq,
     and phase for simulating input signals
@@ -180,10 +182,12 @@ def makeCosine(time, amplitude, frequency, phase=0):
     :param int amplitude: amplitude of cosine curve
     :param int frequency: frequency of cosine curve in Hz
     :param int phase: phase of cosine curve in radians
+    :param float t_step: time step between samples
+    :param ble plot: whether or not to plot cosine curve
     :return array curve: calculated cosine curve
     """
     from numpy import cos, pi, arange
-    t = arange(0, time, 0.01)
+    t = arange(0, time, t_step)
     a = amplitude
     f = frequency
     p = phase
@@ -191,7 +195,53 @@ def makeCosine(time, amplitude, frequency, phase=0):
     curve = a * cos(2 * pi * f * t + p)
     for p in range(len(curve)):
         curve[p] = round(curve[p], 2)
+
+    if plot is True:
+        from matplotlib.pyplot import figure, plot, show
+        figure(1)
+        plot(t, curve)
+        show()
+
     return curve
+
+
+def makePWM(time, amplitude, duty_cycle, frequency, t_step=0.01, plot=False):
+    """
+    This function is for creating a pwm wave of varying time, amplitude,
+    and duty cycle for simulating input signals
+
+    :param int time: time in seconds for pwm wave
+    :param int amplitude: amplitude of pwm wave
+    :param float duty cycle: decimal representing % time pwm wave is non-zero
+    :param float frequency: frequency of pulse wave in Hz
+    :param float t_step: time step between samples
+    :param ble plot: whether or not to plot the pwm wave
+    :return array wave: calculated pwm wave
+    """
+    from numpy import arange
+
+    if duty_cycle > 1 or duty_cycle < 0:
+        print("Warning. Parameter duty_cycle should be between 0 and 1.\n")
+        duty_cycle = 0
+        if duty_cycle > 1:
+            duty_cycle = 1
+
+    t = arange(0, time, t_step)
+    T = 1 // frequency  # period
+    on_time = myRound(duty_cycle * T)
+
+    wave = [0 for x in range(len(t))]
+    for i, _ in enumerate(wave):
+        if T % i > on_time:
+            wave[i] = amplitude
+
+    if plot is True:
+        from matplotlib.pyplot import figure, plot, show
+        figure(1)
+        plot(t, wave)
+        show()
+
+    return wave
 
 
 def dotProduct(list1, list2):
