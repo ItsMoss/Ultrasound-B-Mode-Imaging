@@ -34,6 +34,20 @@ def remove_nans(a_list):
     return int_list
 
 
+def listAdd(a_list, addend):
+    """
+    Adds a number to every element in a list (assuming list only contains nums)
+
+    :param list a_list: a list of all numbers
+    :param float addend: number to be added to each element in list
+    :return list a_list: incremented list
+    """
+    for i, _ in enumerate(a_list):
+        a_list[i] += addend
+
+    return a_list
+
+
 def myAverage(n1, n2):
     """
     This function calculates the average of two integers
@@ -142,7 +156,7 @@ def numpy2list(input_numpy):
     return output_list
 
 
-def makeSine(time, amplitude, frequency, phase=0, t_step=0.01, plot=False):
+def makeSine(time, amplitude, frequency, phase=0, t_step=0.001, plot=False):
     """
     This function is for creating sine waves of varying time, amplitude, freq,
     and phase for simulating input signals
@@ -167,13 +181,13 @@ def makeSine(time, amplitude, frequency, phase=0, t_step=0.01, plot=False):
     if plot is True:
         from matplotlib.pyplot import figure, plot, show
         figure(1)
-        plot(t, curve)
-        show()
+        plot(t, curve, 'r')
+        # show()
 
     return curve
 
 
-def makeCosine(time, amplitude, frequency, phase=0, t_step=0.01, plot=False):
+def makeCosine(time, amplitude, frequency, phase=0, t_step=0.001, plot=False):
     """
     This function is for creating cosine wave of varying time, amplitude, freq,
     and phase for simulating input signals
@@ -199,13 +213,13 @@ def makeCosine(time, amplitude, frequency, phase=0, t_step=0.01, plot=False):
     if plot is True:
         from matplotlib.pyplot import figure, plot, show
         figure(1)
-        plot(t, curve)
-        show()
+        plot(t, curve, 'r')
+        # show()
 
     return curve
 
 
-def makePWM(time, amplitude, duty_cycle, frequency, t_step=0.01, plot=False):
+def makePWM(time, amplitude, duty_cycle, frequency, t_step=0.001, plot=False):
     """
     This function is for creating a pwm wave of varying time, amplitude,
     and duty cycle for simulating input signals
@@ -222,24 +236,30 @@ def makePWM(time, amplitude, duty_cycle, frequency, t_step=0.01, plot=False):
 
     if duty_cycle > 1 or duty_cycle < 0:
         print("Warning. Parameter duty_cycle should be between 0 and 1.\n")
-        duty_cycle = 0
         if duty_cycle > 1:
             duty_cycle = 1
+        else:
+            duty_cycle = 0
 
     t = arange(0, time, t_step)
-    T = 1 // frequency  # period
-    on_time = myRound(duty_cycle * T)
+    T = round(1 / frequency, 2)  # period
+    on_time = round(duty_cycle * T, 2)
 
     wave = [0 for x in range(len(t))]
-    for i, _ in enumerate(wave):
-        if T % i > on_time:
-            wave[i] = amplitude
+    if duty_cycle == 0:
+        pass
+    elif duty_cycle == 1:
+        wave = [amplitude for x in range(len(t))]
+    else:
+        for i, _ in enumerate(wave):
+            if t[i] % T <= on_time:
+                wave[i] = amplitude
 
     if plot is True:
         from matplotlib.pyplot import figure, plot, show
         figure(1)
-        plot(t, wave)
-        show()
+        plot(t, wave, 'r-*')
+        # show()
 
     return wave
 
@@ -269,42 +289,16 @@ def dotProduct(list1, list2):
     return dp
 
 
-def multiplex(Fs, signal1, signal2):
+def percentDiff(n1, n2):
     """
-    This function multiplexes data from two input signals into one single \
-    list, where the first value is sampling frequency and the following \
-    values contain the multiplexed values from each signal
+    This function finds the percent difference between two numbers
 
-    :param int Fs: sampling frequency (in Hz)
-    :param list signal1: an input signal
-    :param list signal2: an input signal
-    :return list mplex: multiplexed signal
+    :param float n1: number one
+    :param float n2: number two
+    :return float pd: percent difference as a decimal
     """
-    # 1. The length of mplex should be determined first
-    # NOTE. It is possible (though not ideal) that one signal is longer than
-    # the other...in such a case only values with overlapping indices will be
-    # copied to mplex (i.e. shorter length will be used)
-    length1 = len(signal1)
-    length2 = len(signal2)
-    if length1 < length2:
-        mplexLen = length1
-    else:
-        mplexLen = length2
-
-    mplex = [0 for x in range(2 * mplexLen + 1)]  # add one for Fs
-
-    # 2. Set Fs
-    mplex[0] = Fs
-
-    # 3. Multiplexing Time!
-    i = 1  # mplex index counter
-    for m in range(mplexLen):
-        mplex[i] = signal1[m]
-        i += 1
-        mplex[i] = signal2[m]
-        i += 1
-
-    return mplex
+    pd = abs(n1 - n2) / n1
+    return pd
 
 
 logDict = {"DEBUG": 10,

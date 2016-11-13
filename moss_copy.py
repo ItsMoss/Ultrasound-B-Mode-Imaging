@@ -73,7 +73,8 @@ def rect(beam, rtype='full'):
     """
     if rtype == 'full':
         for i, v in enumerate(beam):
-            beam[i] = abs(v)
+            if v < 0:
+                beam[i] = -v
     elif rtype == 'half':
         for i, v in enumerate(beam):
             if v < 0:
@@ -83,3 +84,36 @@ def rect(beam, rtype='full'):
         raise ValueError
 
     return beam
+
+
+def find_envelope(beam, sf=0.9):
+    """
+    Finds the envelope of a rectified beam of RF data
+
+    :param list beam: a single beam of RF data
+    :param float sf: smoothing factor for smoothing spline fit (0 =< sf <= 1)
+    :return list envelope: an envelope of a beam of RF data
+    """
+    if min(beam) < 0:
+        print("Error. The input signal is not rectified, so running a full-wav\
+        e rectifier on it.\n")
+        beam = rect(beam)
+
+    from numpy import int16, ones, convolve
+
+    beam_max = max(beam)
+    np_beam = helps.list2numpy(beam)
+    # beam_max = np_beam.max()
+
+    window = len(beam) // 5
+    beam_env = convolve(np_beam, ones(window, dtype=int16)/window, mode='same')
+
+    # env_max = beam_env.max()
+    # offset = beam_max - env_max
+
+    envelope = helps.numpy2list(beam_env)
+    env_max = max(envelope)
+    offset = beam_max - env_max
+    envelope = helps.listAdd(envelope, offset)
+
+    return envelope
