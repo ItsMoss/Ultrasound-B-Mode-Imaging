@@ -182,7 +182,7 @@ def makeSine(time, amplitude, frequency, phase=0, t_step=0.001, plot=False):
         from matplotlib.pyplot import figure, plot, show
         figure(1)
         plot(t, curve, 'r')
-        # show()
+        show()
 
     return curve
 
@@ -214,7 +214,7 @@ def makeCosine(time, amplitude, frequency, phase=0, t_step=0.001, plot=False):
         from matplotlib.pyplot import figure, plot, show
         figure(1)
         plot(t, curve, 'r')
-        # show()
+        show()
 
     return curve
 
@@ -259,7 +259,7 @@ def makePWM(time, amplitude, duty_cycle, frequency, t_step=0.001, plot=False):
         from matplotlib.pyplot import figure, plot, show
         figure(1)
         plot(t, wave, 'r-*')
-        # show()
+        show()
 
     return wave
 

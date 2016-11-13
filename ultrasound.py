@@ -110,6 +110,7 @@ def calc_lat_position(beam_spacing, num_beams):
 
     return lateral, total_lateral
 
+
 def calc_axial_position(c, fs, axial_samples):
     """
     Calculate axial position and length
@@ -138,3 +139,55 @@ def calc_axial_position(c, fs, axial_samples):
     total_depth = float((axial_samples-1)*distance_btw_sample)
 
     return axial, total_depth
+
+
+def rectify(beam, rtype='full'):
+    """
+    Rectifies a beam of RF data
+
+    :param list beam: a single beam of RF data
+    :param str rtype: type of rectification to be done (full or half)
+    :return list beam: rectified beam of RF data
+    """
+    if rtype == 'full':
+        for i, v in enumerate(beam):
+            if v < 0:
+                beam[i] = -v
+    elif rtype == 'half':
+        for i, v in enumerate(beam):
+            if v < 0:
+                beam[i] = 0
+    else:
+        print("Invalid param rtype. Value must be 'full' or 'half'.\n")
+        raise ValueError
+
+    return beam
+
+
+def find_envelope(beam):
+    """
+    Finds the envelope of a rectified beam of RF data
+
+    :param list beam: a single beam of RF data
+    :param float sf: smoothing factor for smoothing spline fit (0 =< sf <= 1)
+    :return list envelope: an envelope of a beam of RF data
+    """
+    if min(beam) < 0:
+        print("Error. The input signal is not rectified, so running a full-wav\
+        e rectifier on it.\n")
+        beam = rectify(beam)
+
+    from numpy import int16, ones, convolve
+
+    beam_max = max(beam)
+    np_beam = helps.list2numpy(beam)
+
+    window = len(beam) // 5
+    beam_env = convolve(np_beam, ones(window, dtype=int16)/window, mode='same')
+
+    envelope = helps.numpy2list(beam_env)
+    env_max = max(envelope)
+    offset = beam_max - env_max
+    envelope = helps.listAdd(envelope, offset)
+
+    return envelope
