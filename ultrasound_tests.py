@@ -130,7 +130,7 @@ def test_rectify():
 
     # Test Case 5
     input5 = [-3, -6, 8, 12, -5]
-    output5 = us.rect(input5, half)
+    output5 = us.rectify(input5, half)
     assert output5 == [0, 0, 8, 12, 0]
 
 
