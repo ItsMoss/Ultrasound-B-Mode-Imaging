@@ -16,7 +16,7 @@ def main():
 
     # 4. Read in a Single Beam of RF data while matrix not full
     byte_n = 0  # read-in byte counter
-    for line, _ in enumerate(list(range(n_beams))):
+    for line, _ in enumerate(range(n_beams)):
 
         rf_beam, byte_n = us.read_rf(rf_file, axial_samples, byte_n)
 

@@ -63,8 +63,9 @@ def init_matrix(x_len, y_len):
 
 
 def parse_main():
-    """This function sets default values or accepts
-    user inputs for the variables in main function
+    """
+    This function sets default values or accepts user inputs for the variables
+    in main function
 
     :returns: args
     """
