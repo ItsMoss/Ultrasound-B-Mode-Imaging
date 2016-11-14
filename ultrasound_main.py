@@ -30,7 +30,7 @@ def main():
         rf_beam = us.find_envelope(rf_beam)
 
         # 7. Logarithmic Compression
-        # rf_beam = us.log_comp()
+        rf_beam = us.log_comp(rf_beam)
 
         # 8. Place Beam in 2-D Matrix
         image_matrix[line] = rf_beam

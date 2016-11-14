@@ -191,3 +191,16 @@ def find_envelope(beam):
     envelope = helps.listAdd(envelope, offset)
 
     return envelope
+
+def log_comp(env_line):
+    """
+    Perform logarithmic compression on envelope line
+
+    :param env_line: envelope of rf line (list)
+    :returns: comp_line (list)
+    """
+
+    data = [abs(x) for x in env_line]
+    comp_line = [x**0.4 for x in data]
+
+    return comp_line
