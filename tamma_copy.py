@@ -97,19 +97,10 @@ def log_comp(env_line):
     Perform logarithmic compression on envelope line
 
     :param env_line: envelope of rf line (list)
-    :returns: log_line (list)
+    :returns: comp_line (list)
     """
 
-    import numpy as np
-
     data = [abs(x) for x in env_line]
+    comp_line = [x**0.4 for x in data]
 
-    for i, j in enumerate(data):
-        if j == 0:
-            print('Warning! Might encounter incorrect data from '
-                  'taking logarithmic calculation of zero')
-            data[i] = 1
-
-    log_line = np.log10(data)
-
-    return log_line
+    return comp_line
