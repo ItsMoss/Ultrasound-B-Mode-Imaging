@@ -12,11 +12,14 @@ def main():
     c, Fs, axial_samples, beam_spacing, n_beams = us.read_jsonfile(json_file)
 
     # 3. Initialize 2-D Matrix
-    image_matrix = us.init_matrix(n_beams, axial_samples)
+    #image_matrix = us.init_matrix(n_beams, axial_samples)
+    image_matrix = us.init_matrix(axial_samples, n_beams)
 
     # 4. Read in a Single Beam of RF data while matrix not full
     byte_n = 0  # read-in byte counter
-    for line, _ in enumerate(n_beams):
+    #for line, _ in enumerate(n_beams):
+    for line, _ in enumerate(list(range(n_beams))):
+
         rf_beam, byte_n = us.read_rf(rf_file, axial_samples, byte_n)
 
         # Error handling
@@ -24,7 +27,7 @@ def main():
             return
 
         # 5. Rectify Beam
-        rf_beam = us.rect(rf_beam)
+        rf_beam = us.rectify(rf_beam)
 
         # 6. Create Envelope of Beam
         rf_beam = us.find_envelope(rf_beam)
