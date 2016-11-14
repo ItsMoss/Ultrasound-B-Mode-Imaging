@@ -192,6 +192,7 @@ def find_envelope(beam):
 
     return envelope
 
+
 def log_comp(env_line):
     """
     Perform logarithmic compression on envelope line

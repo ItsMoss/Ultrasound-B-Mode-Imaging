@@ -254,6 +254,7 @@ def test_find_env():
     assert min(pwm_env3) >= 0
     assert max(pwm_env3) == max(pwm3)
 
+
 def test_log_comp():
     """
     Tests log_comp functionality
