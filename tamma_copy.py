@@ -114,3 +114,43 @@ def display_bmode(x_axis, y_axis, data):
     plt.pcolormesh(x_axis, y_axis, bmode_data, cmap=cm.gray)
     plt.title('B-mode Image')
     plt.show()
+
+def parse_main():
+    """
+    This function sets default values or accepts user inputs for the variables
+    in main function
+
+    :returns: args
+    """
+    import argparse as ap
+
+    par = ap.ArgumentParser(description="Accept user input argument",
+                            formatter_class=ap.ArgumentDefaultsHelpFormatter)
+
+    par.add_argument("--json_filename",
+                     dest="json_filename",
+                     help="Data acquisition metadata in json file",
+                     type=str,
+                     default="bmode.json")
+
+    par.add_argument("--rf_filename",
+                     dest="rf_filename",
+                     help="RF binary filename",
+                     type=str,
+                     default="rfdat.bin")
+
+    par.add_argument("--display",
+                     dest="display",
+                     help="Display B-mode Image (default: False)",
+                     type=bool,
+                     default=False)
+
+    par.add_argument("--save",
+                     dest="save",
+                     help="Filename to save a PNG file of B-mode Image (default: bmode.png)",
+                     type=str,
+                     default='bmode.png')
+
+    args = par.parse_args()
+
+    return args
