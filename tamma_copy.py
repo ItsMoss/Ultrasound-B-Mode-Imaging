@@ -98,3 +98,18 @@ def log_comp(env_line):
     comp_line = [x**0.4 for x in data]
 
     return comp_line
+
+def display_bmode(x_axis, y_axis, data):
+    """
+    Display B-mode image
+    :param x_axis: x axis (list)
+    :param y_axis: y axis (list)
+    :param data: data for b-mode display (2D matrix)
+    :return:
+    """
+
+    import matplotlib.pyplot as plt
+    import matplotlib.cm as cm
+    plt.pcolormesh(x_axis, y_axis, bmode_data, cmap=cm.gray)
+    plt.title('B-mode Image')
+    plt.show()
