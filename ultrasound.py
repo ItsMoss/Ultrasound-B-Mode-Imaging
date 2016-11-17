@@ -23,7 +23,7 @@ def read_rf(rf_file, size, byte_it):
     :param str rf_file: input binary file name
     :param int size: the amount samples that make up a single beam
     :param int byte_it: iterator that marks where bytes should be read from
-    :return array beam: a single beam of RF data from shallow to deep
+    :return list beam: a single beam of RF data from shallow to deep
     :return int byte_it: updtated iterator based on number of bytes read (is \
     -1 if error occurs or EOF reached while reading in data)
     """
