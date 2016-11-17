@@ -13,13 +13,7 @@ def read_jsonfile(infile):
     with open(infile) as file:
         params = load(file)
 
-    c = params['c']
-    fs = params['fs']
-    axial_samples = params['axial_samples']
-    beam_spacing = params['beam_spacing']
-    num_beams = params['num_beams']
-
-    return c, fs, axial_samples, beam_spacing, num_beams
+    return params
 
 
 def read_rf(rf_file, size, byte_it):
