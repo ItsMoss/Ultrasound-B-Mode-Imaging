@@ -1,5 +1,6 @@
 # This file is for main program
 import ultrasound as us
+from numpy import array
 
 
 def main():
@@ -34,7 +35,7 @@ def main():
         rf_beam = us.log_comp(rf_beam)
 
         # 8. Place Beam in 2-D Matrix
-        image_matrix[line] = rf_beam
+        image_matrix[line] = array(rf_beam)
 
     # 9. Output
     # A. Reshape Matrix

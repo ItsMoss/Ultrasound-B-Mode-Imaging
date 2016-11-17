@@ -57,9 +57,10 @@ def init_matrix(x_len, y_len):
 
     :param int x_len: x-axis length (i.e. number of columns)
     :param int y_len: y-axis length (i.e. number of rows)
-    :return list: 2-D matrix with all values initialized to 0
+    :return ndarray: 2-D matrix with all values initialized to 0
     """
-    return [[0 for x in range(x_len)] for y in range(y_len)]
+    from numpy import zeros
+    return zeros((y_len, x_len))
 
 
 def parse_main():
