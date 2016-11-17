@@ -99,6 +99,7 @@ def log_comp(env_line):
 
     return comp_line
 
+
 def display_bmode(x_axis, y_axis, data):
     """
     Display B-mode image
