@@ -10,7 +10,13 @@ def main():
     rf_file = main_args.rf_filename
 
     # 2. Read JSON metadata
-    c, Fs, axial_samples, beam_spacing, n_beams = us.read_jsonfile(json_file)
+    params = us.read_jsonfile(json_file)
+
+    c = params['c']
+    Fs = params['fs']
+    axial_samples = params['axial_samples']
+    beam_spacing = params['beam_spacing']
+    n_beams = params['num_beams']
 
     # 3. Initialize 2-D Matrix
     image_matrix = us.init_matrix(axial_samples, n_beams)
