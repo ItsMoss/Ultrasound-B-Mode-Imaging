@@ -200,3 +200,8 @@ def save_bmode(fig, save, filename):
             regex = r"^(.*?)\..*"
             filename =re.findall(regex, filename)
             plt.savefig(filename[0], bbox_inches='tight')
+    elif save is False:
+        pass
+    else:
+        print('Warning: Unable to process display input - set to default (False)')
+        pass

@@ -66,3 +66,11 @@ def test_save_img():
     tc.save_bmode(fig, False, 'test4.png')
     output = os.path.isfile('test4.png')
     assert output == False
+
+    # Case5
+    checkfile = os.path.isfile('test5.png')
+    if checkfile == True:
+        os.remove('test5.png')
+    tc.save_bmode(fig, 'F', 'test5.png')
+    output = os.path.isfile('test5.png')
+    assert output == False
