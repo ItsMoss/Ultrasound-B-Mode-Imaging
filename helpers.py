@@ -301,6 +301,24 @@ def percentDiff(n1, n2):
     return pd
 
 
+def init_log_file(fname, name, log_level):
+    """
+    This function initializes an output file for continuous log of heart rate
+    data for a user/patient (in .txt format)
+
+    :param str fname: desired name for output file (without file extension)
+    :param str name: name of the user
+    :param str log_level: the desired level of logging for the output file
+    """
+    import logging as log
+
+    log.basicConfig(filename=fname+'.log', level=logDict[log_level])
+    message = "This file is a B-Mode U/S log for "+name+"\n"
+    log.info(message)
+
+    return
+
+
 logDict = {"DEBUG": 10,
            "INFO": 20,
            "WARNING": 30,
