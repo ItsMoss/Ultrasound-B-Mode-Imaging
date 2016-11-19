@@ -36,21 +36,33 @@ def test_save_img():
     fig = tc.plot_bmode(xaxis, yaxis, data)
 
     # Case 1
+    checkfile = os.path.isfile('test1.png')
+    if checkfile == True:
+        os.remove('test1.png')
     tc.save_bmode(fig, True, 'test1.png')
     output = os.path.isfile('test1.png')
     assert output == True
 
     # Case 2
+    checkfile = os.path.isfile('test2.png')
+    if checkfile == True:
+        os.remove('test2.png')
     tc.save_bmode(fig, True, 'test2')
     output = os.path.isfile('test2.png')
     assert output == True
 
     # Case 3
+    checkfile = os.path.isfile('test3.png')
+    if checkfile == True:
+        os.remove('test3.png')
     tc.save_bmode(fig, True, 'test3.jpeg')
     output = os.path.isfile('test3.png')
     assert output == True
 
     # Case4
+    checkfile = os.path.isfile('test4.png')
+    if checkfile == True:
+        os.remove('test4.png')
     tc.save_bmode(fig, False, 'test4.png')
     output = os.path.isfile('test4.png')
     assert output == False
