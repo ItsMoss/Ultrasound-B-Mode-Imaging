@@ -76,3 +76,75 @@ def test_save_img():
     tc.save_bmode(fig, 'F', 'test5.png')
     output = os.path.isfile('test5.png')
     assert output is False
+
+
+def test_reshape_matrix():
+    import numpy as np
+
+    # Case 1
+    data = np.zeros((5, 10))
+    data_size = np.shape(data)
+    nrow_in = data_size[0]
+    ncolumn_in = data_size[1]
+
+    output = tc.reshape_matrix(data)
+    output_size = np.shape(output)
+    nrow_out = output_size[0]
+    ncolumn_out = output_size[1]
+
+    assert nrow_in == ncolumn_out
+    assert nrow_out == ncolumn_in
+
+    # Case 2
+    data = np.zeros((1, 10))
+    data_size = np.shape(data)
+    nrow_in = data_size[0]
+    ncolumn_in = data_size[1]
+
+    output = tc.reshape_matrix(data)
+    output_size = np.shape(output)
+    nrow_out = output_size[0]
+    ncolumn_out = output_size[1]
+
+    assert nrow_in == ncolumn_out
+    assert nrow_out == ncolumn_in
+
+    # Case 3
+    data = np.zeros((5, 1))
+    data_size = np.shape(data)
+    nrow_in = data_size[0]
+    ncolumn_in = data_size[1]
+
+    output = tc.reshape_matrix(data)
+    output_size = np.shape(output)
+    nrow_out = output_size[0]
+    ncolumn_out = output_size[1]
+
+    assert nrow_in == ncolumn_out
+    assert nrow_out == ncolumn_in
+
+    # Case 4
+    data = np.zeros((5, 10))
+    line = np.array(range(1, 11))
+    for i in range(0, 5):
+        data[i] = line
+    data_row1 = data[0]
+
+    output = tc.reshape_matrix(data)
+    output_row1 = output[...,0]
+
+    assert np.array_equal(data_row1, output_row1)
+
+    # Case 5
+    data = np.zeros((5, 1, 10))
+    data_size = np.shape(data)
+    nrow_in = data_size[0]
+    ncolumn_in = data_size[2]
+
+    output = tc.reshape_matrix(data)
+    output_size = np.shape(output)
+    nrow_out = output_size[0]
+    ncolumn_out = output_size[1]
+
+    assert nrow_in == ncolumn_out
+    assert nrow_out == ncolumn_in
