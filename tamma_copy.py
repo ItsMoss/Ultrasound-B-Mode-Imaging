@@ -115,6 +115,7 @@ def display_bmode(x_axis, y_axis, data):
     plt.title('B-mode Image')
     plt.show()
 
+
 def parse_main():
     """
     This function sets default values or accepts user inputs for the variables
@@ -147,7 +148,8 @@ def parse_main():
 
     par.add_argument("--save",
                      dest="save",
-                     help="Filename to save a PNG file of B-mode Image (default: bmode.png)",
+                     help="Filename to save a PNG file of B-mode Image "
+                          "(default: bmode.png)",
                      type=str,
                      default='bmode.png')
 
@@ -196,14 +198,16 @@ def save_bmode(fig, save, filename):
         try:
             plt.savefig(filename, bbox_inches='tight')
         except ValueError:
-            print('Warning: Unable to save as specified extension - save as PNG file')
+            print('Warning: Unable to save as specified extension '
+                  '- save as PNG file')
             regex = r"^(.*?)\..*"
-            filename =re.findall(regex, filename)
+            filename = re.findall(regex, filename)
             plt.savefig(filename[0], bbox_inches='tight')
     elif save is False:
         pass
     else:
-        print('Warning: Unable to process save input - set to default (False)')
+        print('Warning: Unable to process save input '
+              '- set to default (False)')
         pass
 
 
@@ -222,5 +226,6 @@ def display_bmode(fig, display):
     elif display is False:
         pass
     else:
-        print('Warning: Unable to process display input - set to default (False)')
+        print('Warning: Unable to process display input '
+              '- set to default (False)')
         pass
