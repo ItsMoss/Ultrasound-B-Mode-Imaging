@@ -6,7 +6,7 @@ def read_jsonfile(infile):
     Read data parameters from json file
 
     :param str infile: input json filename
-    :returns: c, fs, axial_samples, beam_spacing, num_beams
+    :returns: params
     """
     from json import load
 
