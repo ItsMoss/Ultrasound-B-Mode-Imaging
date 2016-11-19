@@ -135,3 +135,16 @@ def test_reshape_matrix():
 
     assert np.array_equal(data_row1, output_row1)
 
+    # Case 5
+    data = np.zeros((5, 1, 10))
+    data_size = np.shape(data)
+    nrow_in = data_size[0]
+    ncolumn_in = data_size[2]
+
+    output = tc.reshape_matrix(data)
+    output_size = np.shape(output)
+    nrow_out = output_size[0]
+    ncolumn_out = output_size[1]
+
+    assert nrow_in == ncolumn_out
+    assert nrow_out == ncolumn_in

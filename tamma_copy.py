@@ -241,6 +241,14 @@ def reshape_matrix(matrix_in):
     :return: matrix_out
     """
     import numpy as np
+
+    # Check matrix size and dimension
+    matrix_size = np.shape(matrix_in)
+    matrix_ndim = len(matrix_size)
+    if matrix_ndim >2:
+        matrix_in = np.squeeze(matrix_in)
+
     matrix_out = matrix_in.transpose()
 
     return matrix_out
+
