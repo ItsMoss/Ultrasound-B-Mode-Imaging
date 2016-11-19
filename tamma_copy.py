@@ -203,5 +203,24 @@ def save_bmode(fig, save, filename):
     elif save is False:
         pass
     else:
+        print('Warning: Unable to process save input - set to default (False)')
+        pass
+
+
+def display_bmode(fig, display):
+    """
+    Display B-mode image
+    :param fig: figure for b-mode image
+    :param display: display choice (True/False)
+    :return:
+    """
+
+    import matplotlib.pyplot as plt
+
+    if display is True:
+        plt.show(fig)
+    elif display is False:
+        pass
+    else:
         print('Warning: Unable to process display input - set to default (False)')
         pass
