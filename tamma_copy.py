@@ -232,3 +232,15 @@ def display_bmode(fig, display):
         print('Warning: Unable to process display input '
               '- set to default (False)')
         pass
+
+
+def reshape_matrix(matrix_in):
+    """
+    Reshape 2D B-mode matrix
+    :param matrix_in: input 2D matrix
+    :return: matrix_out
+    """
+    import numpy as np
+    matrix_out = matrix_in.transpose()
+
+    return matrix_out
