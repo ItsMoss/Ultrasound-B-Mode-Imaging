@@ -191,8 +191,10 @@ def save_bmode(fig, save, filename):
     :return:
     """
 
-    import matplotlib.pyplot as plt
+    import matplotlib
+    matplotlib.use('Agg')
     import re
+    import matplotlib.pyplot as plt
 
     if save is True:
         try:
