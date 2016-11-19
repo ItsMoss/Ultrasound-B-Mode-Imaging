@@ -123,3 +123,15 @@ def test_reshape_matrix():
     assert nrow_in == ncolumn_out
     assert nrow_out == ncolumn_in
 
+    # Case 4
+    data = np.zeros((5, 10))
+    line = np.array(range(1, 11))
+    for i in range(0, 5):
+        data[i] = line
+    data_row1 = data[0]
+
+    output = tc.reshape_matrix(data)
+    output_row1 = output[...,0]
+
+    assert np.array_equal(data_row1, output_row1)
+
