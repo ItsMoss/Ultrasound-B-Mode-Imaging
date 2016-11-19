@@ -177,3 +177,26 @@ def plot_bmode(x_axis, y_axis, data):
     plt.axis('image')
 
     return fig
+
+
+def save_bmode(fig, save, filename):
+    """
+    Save B-mode image
+
+    :param fig: figure for bmode
+    :param save: save image (True/False)
+    :param filename: filename (.png)
+    :return:
+    """
+
+    import matplotlib.pyplot as plt
+    import re
+
+    if save is True:
+        try:
+            plt.savefig(filename, bbox_inches='tight')
+        except ValueError:
+            print('Warning: Unable to save as specified extension - save as PNG file')
+            regex = r"^(.*?)\..*"
+            filename =re.findall(regex, filename)
+            plt.savefig(filename[0], bbox_inches='tight')
