@@ -154,3 +154,26 @@ def parse_main():
     args = par.parse_args()
 
     return args
+
+
+def plot_bmode(x_axis, y_axis, data):
+    """
+    Generate figure for B-mode image
+
+    :param x_axis: x axis (list)
+    :param y_axis: y axis (list)
+    :param data: data for b-mode display (2D matrix)
+    :return: fig
+    """
+
+    import matplotlib.pyplot as plt
+    import matplotlib.cm as cm
+
+    fig = plt.pcolormesh(x_axis, y_axis, data, cmap=cm.gray)
+    plt.title('B-mode Image')
+    plt.xlabel('Lateral Position (m)')
+    plt.ylabel('Depth (m)')
+    plt.axis([min(x_axis), max(x_axis), min(y_axis), max(y_axis)])
+    plt.axis('image')
+
+    return fig
