@@ -54,11 +54,11 @@ def test_save_img():
     assert output is True
 
     # Case 3
-    checkfile = os.path.isfile('test3.png')
+    checkfile = os.path.isfile('test3.jpeg')
     if checkfile is True:
-        os.remove('test3.png')
+        os.remove('test3.jpeg')
     tc.save_bmode(fig, True, 'test3.jpeg')
-    output = os.path.isfile('test3.png')
+    output = os.path.isfile('test3.jpeg')
     assert output is True
 
     # Case4
