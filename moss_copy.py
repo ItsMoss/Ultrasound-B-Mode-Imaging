@@ -139,7 +139,7 @@ def calc_axial_position(c, fs, axial_samples):
         errmsg = "Input Parameter Error! Improbable sampling frequency"
         print(errmsg)
         log.error(errmsg)
-        raise ZeroDivisionError
+        # raise ZeroDivisionError
 
     distance_btw_sample = c*delta_t
 

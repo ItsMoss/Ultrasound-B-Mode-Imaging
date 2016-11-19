@@ -1,5 +1,5 @@
 # This file is for main program
-import moss_copy as us
+import ultrasound as us
 import helpers as helps
 from numpy import array
 import logging as log
