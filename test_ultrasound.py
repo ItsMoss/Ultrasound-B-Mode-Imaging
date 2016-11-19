@@ -10,10 +10,18 @@ def test_read_jsonfile():
     """
 
     infile = 'bmode.json'
-    [c, fs, axial_samples, beam_spacing, num_beams] = us.read_jsonfile(infile)
-    param = [c, fs, axial_samples, beam_spacing, num_beams]
+    params = us.read_jsonfile(infile)
+    c = params['c']
+    fs = params['fs']
+    axial_samples = params['axial_samples']
+    beam_spacing = params['beam_spacing']
+    num_beams = params['num_beams']
 
-    assert param == [1540, 40000000, 1556, 0.00011746274509803921, 256]
+    assert c == 1540
+    assert fs == 40000000
+    assert axial_samples == 1556
+    assert beam_spacing == 0.00011746274509803921
+    assert num_beams == 256
 
 
 def test_read_rf():
@@ -53,16 +61,16 @@ def test_init_matrix():
     Tests init_matrix functionality from ultrasound.py
     """
     output1 = us.init_matrix(0, 0)
-    assert output1 == []
+    assert output1.tolist() == []
 
     output2 = us.init_matrix(1, 0)
-    assert output2 == []
+    assert output2.tolist() == []
 
     output3 = us.init_matrix(2, 2)
-    assert output3 == [[0, 0], [0, 0]]
+    assert output3.tolist() == [[0, 0], [0, 0]]
 
     output4 = us.init_matrix(2, 4)
-    assert output4 == [[0, 0], [0, 0], [0, 0], [0, 0]]
+    assert output4.tolist() == [[0, 0], [0, 0], [0, 0], [0, 0]]
 
 
 def test_calc_lat_position():

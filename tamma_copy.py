@@ -5,7 +5,7 @@ def read_jsonfile(infile):
     """ Read data parameters from json file
 
     :param infile: input json filename (str)
-    :returns: c, fs, axial_samples, beam_spacing, num_beams
+    :returns: params
     """
 
     import json
@@ -13,13 +13,7 @@ def read_jsonfile(infile):
     with open(infile) as file:
         params = json.load(file)
 
-    c = params['c']
-    fs = params['fs']
-    axial_samples = params['axial_samples']
-    beam_spacing = params['beam_spacing']
-    num_beams = params['num_beams']
-
-    return c, fs, axial_samples, beam_spacing, num_beams
+    return params
 
 
 def read_rffile(rffile):
@@ -104,3 +98,157 @@ def log_comp(env_line):
     comp_line = [x**0.4 for x in data]
 
     return comp_line
+
+
+def display_bmode(x_axis, y_axis, data):
+    """
+    Display B-mode image
+    :param x_axis: x axis (list)
+    :param y_axis: y axis (list)
+    :param data: data for b-mode display (2D matrix)
+    :return:
+    """
+
+    import matplotlib.pyplot as plt
+    import matplotlib.cm as cm
+    plt.pcolormesh(x_axis, y_axis, bmode_data, cmap=cm.gray)
+    plt.title('B-mode Image')
+    plt.show()
+
+
+def parse_main():
+    """
+    This function sets default values or accepts user inputs for the variables
+    in main function
+
+    :returns: args
+    """
+    import argparse as ap
+
+    par = ap.ArgumentParser(description="Accept user input argument",
+                            formatter_class=ap.ArgumentDefaultsHelpFormatter)
+
+    par.add_argument("--json_filename",
+                     dest="json_filename",
+                     help="Data acquisition metadata in json file",
+                     type=str,
+                     default="bmode.json")
+
+    par.add_argument("--rf_filename",
+                     dest="rf_filename",
+                     help="RF binary filename",
+                     type=str,
+                     default="rfdat.bin")
+
+    par.add_argument("--display",
+                     dest="display",
+                     help="Display B-mode Image (default: False)",
+                     type=bool,
+                     default=False)
+
+    par.add_argument("--save",
+                     dest="save",
+                     help="Filename to save a PNG file of B-mode Image "
+                          "(default: bmode.png)",
+                     type=str,
+                     default='bmode.png')
+
+    args = par.parse_args()
+
+    return args
+
+
+def plot_bmode(x_axis, y_axis, data):
+    """
+    Generate figure for B-mode image
+
+    :param x_axis: x axis (list)
+    :param y_axis: y axis (list)
+    :param data: data for b-mode display (2D matrix)
+    :return: fig
+    """
+    import matplotlib
+    matplotlib.use('Agg')
+    import matplotlib.pyplot as plt
+    import matplotlib.cm as cm
+
+    fig = plt.pcolormesh(x_axis, y_axis, data, cmap=cm.gray)
+    plt.title('B-mode Image')
+    plt.xlabel('Lateral Position (m)')
+    plt.ylabel('Depth (m)')
+    plt.axis([min(x_axis), max(x_axis), min(y_axis), max(y_axis)])
+    plt.axis('image')
+
+    return fig
+
+
+def save_bmode(fig, save, filename):
+    """
+    Save B-mode image
+
+    :param fig: figure for bmode
+    :param save: save image (True/False)
+    :param filename: filename (.png)
+    :return:
+    """
+
+    import matplotlib
+    matplotlib.use('Agg')
+    import re
+    import matplotlib.pyplot as plt
+
+    if save is True:
+        try:
+            plt.savefig(filename, bbox_inches='tight')
+        except ValueError:
+            print('Warning: Unable to save as specified extension '
+                  '- save as PNG file')
+            regex = r"^(.*?)\..*"
+            filename = re.findall(regex, filename)
+            plt.savefig(filename[0], bbox_inches='tight')
+    elif save is False:
+        pass
+    else:
+        print('Warning: Unable to process save input '
+              '- set to default (False)')
+        pass
+
+
+def display_bmode(fig, display):
+    """
+    Display B-mode image
+    :param fig: figure for b-mode image
+    :param display: display choice (True/False)
+    :return:
+    """
+
+    import matplotlib.pyplot as plt
+
+    if display is True:
+        plt.show(fig)
+    elif display is False:
+        pass
+    else:
+        print('Warning: Unable to process display input '
+              '- set to default (False)')
+        pass
+
+
+def reshape_matrix(matrix_in):
+    """
+    Reshape 2D B-mode matrix
+    :param matrix_in: input 2D matrix
+    :return: matrix_out
+    """
+    import numpy as np
+
+    # Check matrix size and dimension
+    matrix_size = np.shape(matrix_in)
+    matrix_ndim = len(matrix_size)
+    if matrix_ndim >2:
+        matrix_in = np.squeeze(matrix_in)
+
+    matrix_out = matrix_in.transpose()
+
+    return matrix_out
+
