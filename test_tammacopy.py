@@ -147,3 +147,20 @@ def test_reshape_matrix():
 
     assert nrow_in == ncolumn_out
     assert nrow_out == ncolumn_in
+
+
+import pytest
+@pytest.mark.mpl_image_compare
+def test_plot_basic():
+
+    import numpy as np
+
+    data = np.zeros((100, 100))
+    line = np.array(range(1, 101))
+    for i in range(0, 100):
+        data[i] = line
+
+    x = np.linspace(1, 10, 100)
+    y = np.linspace(1, 10, 100)
+
+    return tc.plot_bmode(x, y, data)

@@ -167,12 +167,13 @@ def plot_bmode(x_axis, y_axis, data):
     :param data: data for b-mode display (2D matrix)
     :return: fig
     """
-    import matplotlib
-    matplotlib.use('Agg')
+    # import matplotlib
+    # matplotlib.use('Agg')
     import matplotlib.pyplot as plt
     import matplotlib.cm as cm
 
-    fig = plt.pcolormesh(x_axis, y_axis, data, cmap=cm.gray)
+    fig = plt.figure()
+    plt.pcolormesh(x_axis, y_axis, data, cmap=cm.gray)
     plt.title('B-mode Image')
     plt.xlabel('Lateral Position (m)')
     plt.ylabel('Depth (m)')
