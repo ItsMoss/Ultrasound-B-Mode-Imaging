@@ -220,9 +220,15 @@ def find_envelope(beam):
     beam_env = convolve(np_beam, ones(window, dtype=int16)/window, mode='same')
 
     envelope = helps.numpy2list(beam_env)
+    offset = min(envelope)
+    envelope = helps.listOperation(envelope, '-', offset)
     env_max = max(envelope)
-    offset = beam_max - env_max
-    envelope = helps.listAdd(envelope, offset)
+
+    try:
+        for i, v in enumerate(envelope):
+            envelope[i] = v / env_max * beam_max
+    except ZeroDivisionError:
+        envelope = helps.listOperation(envelope, '+', beam_max)
 
     return envelope
 

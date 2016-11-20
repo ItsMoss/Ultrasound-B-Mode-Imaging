@@ -95,6 +95,19 @@ def parse_main():
                      type=str,
                      default="DEBUG")
 
+    par.add_argument("--display",
+                     dest="display",
+                     help="Display B-mode Image (default: False)",
+                     type=bool,
+                     default=False)
+
+    par.add_argument("--save",
+                     dest="save",
+                     help="Filename to save a PNG file of B-mode Image "
+                          "(default: bmode.png)",
+                     type=str,
+                     default='bmode.png')
+
     args = par.parse_args()
 
     return args
@@ -140,8 +153,9 @@ def calc_axial_position(c, fs, axial_samples):
         print(errmsg)
         log.error(errmsg)
         # raise ZeroDivisionError
+        return 0.0, 0.0
 
-    distance_btw_sample = c*delta_t
+    distance_btw_sample = c*delta_t/2
 
     start_position = 0
     end_position = distance_btw_sample*(axial_samples)
@@ -206,9 +220,15 @@ def find_envelope(beam):
     beam_env = convolve(np_beam, ones(window, dtype=int16)/window, mode='same')
 
     envelope = helps.numpy2list(beam_env)
+    offset = min(envelope)
+    envelope = helps.listOperation(envelope, '-', offset)
     env_max = max(envelope)
-    offset = beam_max - env_max
-    envelope = helps.listAdd(envelope, offset)
+
+    try:
+        for i, v in enumerate(envelope):
+            envelope[i] = v / env_max * beam_max
+    except ZeroDivisionError:
+        envelope = helps.listOperation(envelope, '+', beam_max)
 
     return envelope
 
@@ -226,3 +246,91 @@ def log_comp(env_line):
     comp_line = [x**0.4 for x in data]
 
     return comp_line
+
+
+def plot_bmode(x_axis, y_axis, data):
+    """
+    Generate figure for B-mode image
+
+    :param x_axis: x axis (list)
+    :param y_axis: y axis (list)
+    :param data: data for b-mode display (2D matrix)
+    :return: fig
+    """
+    # import matplotlib
+    # matplotlib.use('Agg')
+    import matplotlib.pyplot as plt
+    import matplotlib.cm as cm
+
+    fig = plt.pcolormesh(x_axis, y_axis, data, cmap=cm.gray)
+    plt.title('B-mode Image')
+    plt.xlabel('Lateral Position (m)')
+    plt.ylabel('Depth (m)')
+    plt.axis([min(x_axis), max(x_axis), min(y_axis), max(y_axis)])
+    plt.axis('image')
+
+    return fig
+
+
+def save_bmode(fig, filename):
+    """
+    Save B-mode image
+
+    :param fig: figure for bmode
+    :param filename: filename (.png)
+    :return:
+    """
+
+    # import matplotlib
+    # matplotlib.use('Agg')
+    import re
+    import matplotlib.pyplot as plt
+
+    try:
+        plt.savefig(filename, bbox_inches='tight')
+    except ValueError:
+        print('Warning: Unable to save as specified extension '
+              '- save as PNG file')
+        regex = r"^(.*?)\..*"
+        filename = re.findall(regex, filename)
+        plt.savefig(filename[0], bbox_inches='tight')
+
+
+def display_bmode(fig, display):
+    """
+    Display B-mode image
+    :param fig: figure for b-mode image
+    :param display: display choice (True/False)
+    :return:
+    """
+
+    import matplotlib.pyplot as plt
+
+    if display is True:
+        plt.show(fig)
+    elif display is False:
+        pass
+    else:
+        print('Warning: Unable to process display input '
+              '- set to default (False)')
+        pass
+
+
+def reshape_matrix(matrix_in):
+    """
+    Reshape 2D B-mode matrix
+    :param matrix_in: input 2D matrix
+    :return: matrix_out
+    """
+    import numpy as np
+
+    # Check matrix size and dimension
+    matrix_size = np.shape(matrix_in)
+    matrix_ndim = len(matrix_size)
+    if matrix_ndim >2:
+        matrix_in = np.squeeze(matrix_in)
+
+    matrix_out = matrix_in.transpose()
+
+    return matrix_out
+
