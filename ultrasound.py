@@ -251,12 +251,12 @@ def plot_bmode(x_axis, y_axis, data):
     :param data: data for b-mode display (2D matrix)
     :return: fig
     """
-    # import matplotlib
-    # matplotlib.use('Agg')
+
     import matplotlib.pyplot as plt
     import matplotlib.cm as cm
 
-    fig = plt.pcolormesh(x_axis, y_axis, data, cmap=cm.gray)
+    fig = plt.figure()
+    plt.pcolormesh(x_axis, y_axis, data, cmap=cm.gray)
     plt.title('B-mode Image')
     plt.xlabel('Lateral Position (m)')
     plt.ylabel('Depth (m)')
@@ -275,8 +275,6 @@ def save_bmode(fig, filename):
     :return:
     """
 
-    # import matplotlib
-    # matplotlib.use('Agg')
     import re
     import matplotlib.pyplot as plt
 
@@ -288,6 +286,9 @@ def save_bmode(fig, filename):
         regex = r"^(.*?)\..*"
         filename = re.findall(regex, filename)
         plt.savefig(filename[0], bbox_inches='tight')
+    except OSError:
+        print('Warning: Run out of space - cannot save the image')
+        pass
 
 
 def display_bmode(fig, display):
