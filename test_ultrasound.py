@@ -2,6 +2,7 @@ import ultrasound as us
 import helpers as helps
 from numpy import arange
 from random import randrange
+import pytest
 import matplotlib
 matplotlib.use('Agg')
 
@@ -99,11 +100,13 @@ def test_calc_axial():
     """
 
     [ax1, total_depth1] = us.calc_axial_position(1, 100, 10)
-    assert ax1 == [0.00, 0.005, 0.01, 0.015, 0.02, 0.025, 0.03, 0.035, 0.04, 0.045]
+    assert ax1 == [0.00, 0.005, 0.01, 0.015, 0.02, 0.025, 0.03, 0.035, 0.04,
+                   0.045]
     assert total_depth1 == 0.045
 
     [ax2, total_depth2] = us.calc_axial_position(0.5, 50, 10)
-    assert ax2 == [0.00, 0.005, 0.01, 0.015, 0.02, 0.025, 0.03, 0.035, 0.04, 0.045]
+    assert ax2 == [0.00, 0.005, 0.01, 0.015, 0.02, 0.025, 0.03, 0.035, 0.04,
+                   0.045]
     assert total_depth2 == 0.045
 
     [ax3, total_depth3] = us.calc_axial_position(1, 0, 10)
@@ -269,86 +272,88 @@ def test_log_comp():
     """
     Tests log_comp functionality
     """
-
-    import tamma_copy as tc
-    import numpy as np
+    from numpy import array_equal
 
     output1 = us.log_comp([1, 10, 100, 1000, 10000])
     out1 = [1.0, 2.51188643150958, 6.309573444801933,
             15.848931924611136, 39.810717055349734]
-    assert np.array_equal(output1, out1)
+    assert array_equal(output1, out1)
 
     output2 = us.log_comp([-1, -10, -100, -1000, -10000])
     out2 = [1.0, 2.51188643150958, 6.309573444801933,
             15.848931924611136, 39.810717055349734]
-    assert np.array_equal(output2, out2)
+    assert array_equal(output2, out2)
 
     output3 = us.log_comp([0, 10, 100, 1000, 10000])
     out3 = [0.0, 2.51188643150958, 6.309573444801933,
             15.848931924611136, 39.810717055349734]
-    assert np.array_equal(output3, out3)
+    assert array_equal(output3, out3)
 
 
+def test_save_bmode():
+    """
+    Tests functionality of save_bmode from ultrasound.py
+    """
+    from numpy import zeros, array, linspace
+    from os import path, remove
 
-def test_save_img():
-
-    import numpy as np
-    import os
-
-    data = np.zeros((100, 100))
-    line = np.array(range(1, 101))
+    data = zeros((100, 100))
+    line = array(range(1, 101))
     for i in range(0, 100):
         data[i] = line
 
-    xaxis = np.linspace(1, 10, 100)
-    yaxis = np.linspace(1, 10, 100)
+    xaxis = linspace(1, 10, 100)
+    yaxis = linspace(1, 10, 100)
 
     fig = us.plot_bmode(xaxis, yaxis, data)
 
     # Case 1
-    checkfile = os.path.isfile('test1.png')
+    checkfile = path.isfile('test1.png')
     if checkfile is True:
-        os.remove('test1.png')
+        remove('test1.png')
     us.save_bmode(fig, 'test1.png')
-    output = os.path.isfile('test1.png')
+    output = path.isfile('test1.png')
     assert output is True
 
     # Case 2
-    checkfile = os.path.isfile('test2.png')
+    checkfile = path.isfile('test2.png')
     if checkfile is True:
-        os.remove('test2.png')
+        remove('test2.png')
     us.save_bmode(fig, 'test2')
-    output = os.path.isfile('test2.png')
+    output = path.isfile('test2.png')
     assert output is True
 
     # Case 3
-    checkfile = os.path.isfile('test3.png')
+    checkfile = path.isfile('test3.png')
     if checkfile is True:
-        os.remove('test3.png')
+        remove('test3.png')
     us.save_bmode(fig, 'test3.abc')
-    output = os.path.isfile('test3.png')
+    output = path.isfile('test3.png')
     assert output is True
 
     # Case 4
-    checkfile = os.path.isfile('test4.png')
+    checkfile = path.isfile('test4.png')
     if checkfile is True:
-        os.remove('test4.png')
+        remove('test4.png')
     us.save_bmode(fig, 'test4.pdf')
-    output = os.path.isfile('test4.pdf')
+    output = path.isfile('test4.pdf')
     assert output is True
 
 
 def test_reshape_matrix():
-    import numpy as np
+    """
+    Tests functionality of reshape_matrix from ultrasound.py
+    """
+    from numpy import zeros, shape, array, array_equal
 
     # Case 1
-    data = np.zeros((5, 10))
-    data_size = np.shape(data)
+    data = zeros((5, 10))
+    data_size = shape(data)
     nrow_in = data_size[0]
     ncolumn_in = data_size[1]
 
     output = us.reshape_matrix(data)
-    output_size = np.shape(output)
+    output_size = shape(output)
     nrow_out = output_size[0]
     ncolumn_out = output_size[1]
 
@@ -356,13 +361,13 @@ def test_reshape_matrix():
     assert nrow_out == ncolumn_in
 
     # Case 2
-    data = np.zeros((1, 10))
-    data_size = np.shape(data)
+    data = zeros((1, 10))
+    data_size = shape(data)
     nrow_in = data_size[0]
     ncolumn_in = data_size[1]
 
     output = us.reshape_matrix(data)
-    output_size = np.shape(output)
+    output_size = shape(output)
     nrow_out = output_size[0]
     ncolumn_out = output_size[1]
 
@@ -370,13 +375,13 @@ def test_reshape_matrix():
     assert nrow_out == ncolumn_in
 
     # Case 3
-    data = np.zeros((5, 1))
-    data_size = np.shape(data)
+    data = zeros((5, 1))
+    data_size = shape(data)
     nrow_in = data_size[0]
     ncolumn_in = data_size[1]
 
     output = us.reshape_matrix(data)
-    output_size = np.shape(output)
+    output_size = shape(output)
     nrow_out = output_size[0]
     ncolumn_out = output_size[1]
 
@@ -384,25 +389,25 @@ def test_reshape_matrix():
     assert nrow_out == ncolumn_in
 
     # Case 4
-    data = np.zeros((5, 10))
-    line = np.array(range(1, 11))
+    data = zeros((5, 10))
+    line = array(range(1, 11))
     for i in range(0, 5):
         data[i] = line
     data_row1 = data[0]
 
     output = us.reshape_matrix(data)
-    output_row1 = output[...,0]
+    output_row1 = output[..., 0]
 
-    assert np.array_equal(data_row1, output_row1)
+    assert array_equal(data_row1, output_row1)
 
     # Case 5
-    data = np.zeros((5, 1, 10))
-    data_size = np.shape(data)
+    data = zeros((5, 1, 10))
+    data_size = shape(data)
     nrow_in = data_size[0]
     ncolumn_in = data_size[2]
 
     output = us.reshape_matrix(data)
-    output_size = np.shape(output)
+    output_size = shape(output)
     nrow_out = output_size[0]
     ncolumn_out = output_size[1]
 
@@ -410,19 +415,19 @@ def test_reshape_matrix():
     assert nrow_out == ncolumn_in
 
 
-
-import pytest
 @pytest.mark.mpl_image_compare
-def test_plot_basic():
+def test_plot_bmode():
+    """
+    Test functionality of plot_bmode from ultrasound.py
+    """
+    from numpy import zeros, array, linspace
 
-    import numpy as np
-
-    data = np.zeros((100, 100))
-    line = np.array(range(1, 101))
+    data = zeros((100, 100))
+    line = array(range(1, 101))
     for i in range(0, 100):
         data[i] = line
 
-    x = np.linspace(1, 10, 100)
-    y = np.linspace(1, 10, 100)
+    x = linspace(1, 10, 100)
+    y = linspace(1, 10, 100)
 
     return us.plot_bmode(x, y, data)
