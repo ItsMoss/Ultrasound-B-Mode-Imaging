@@ -161,7 +161,7 @@ def calc_axial_position(c, fs, axial_samples):
         # raise ZeroDivisionError
         return 0.0, 0.0
 
-    distance_btw_sample = c*delta_t
+    distance_btw_sample = c*delta_t/2
 
     start_position = 0
     end_position = distance_btw_sample*(axial_samples)
