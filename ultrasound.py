@@ -1,4 +1,5 @@
 import helpers as helps
+import logging as log
 
 
 def read_jsonfile(infile):
@@ -6,9 +7,10 @@ def read_jsonfile(infile):
     Read data parameters from json file
 
     :param str infile: input json filename
-    :returns: params
+    :returns: c, fs, axial_samples, beam_spacing, num_beams
     """
     from json import load
+    log.debug("Reading input JSON file")
 
     with open(infile) as file:
         params = load(file)
@@ -28,6 +30,7 @@ def read_rf(rf_file, size, byte_it):
     -1 if error occurs or EOF reached while reading in data)
     """
     import struct as struct
+    log.debug("Reading input binary file of RF data")
 
     beam = [0 for x in range(size)]
 
@@ -38,8 +41,10 @@ def read_rf(rf_file, size, byte_it):
                 beam[i] = struct.unpack('<h', f.read(2))[0]
                 byte_it += 2
             except struct.error:
-                print("Input RF file error! Reached EOF before amount of data \
-                specified in input JSON file could be read in.\n")
+                errmsg = "Input RF file error! Reached EOF before amount of \
+                data specified in input JSON file could be read in.\n"
+                print(errmsg)
+                log.error(errmsg)
                 return beam, -1
 
     return helps.remove_nans(beam), byte_it
@@ -54,6 +59,7 @@ def init_matrix(x_len, y_len):
     :return ndarray: 2-D matrix with all values initialized to 0
     """
     from numpy import zeros
+    log.debug("Initializing 2D image matrix")
     return zeros((y_len, x_len))
 
 
@@ -81,6 +87,27 @@ def parse_main():
                      type=str,
                      default="rfdat.bin")
 
+    par.add_argument("--log_level",
+                     dest="log_level",
+                     help="Level of logging user wishes to be printed to ou\
+                     tput file. Accepatable values are DEBUG, INFO, WARNING\
+                     , ERROR, and CRITICAL. DEFAULT=DEBUG",
+                     type=str,
+                     default="DEBUG")
+
+    par.add_argument("--display",
+                     dest="display",
+                     help="Display B-mode Image (default: False)",
+                     type=bool,
+                     default=False)
+
+    par.add_argument("--save",
+                     dest="save",
+                     help="Filename to save a PNG file of B-mode Image "
+                          "(default: bmode.png)",
+                     type=str,
+                     default='bmode.png')
+
     args = par.parse_args()
 
     return args
@@ -94,8 +121,8 @@ def calc_lat_position(beam_spacing, num_beams):
     :param num_beams: number of lateral beams
     :returns: lateral (list), total_lateral (float)
     """
-
     import numpy as np
+    log.debug("Calculating lateral dimension for output image")
 
     start_position = -((num_beams-1)/2)*beam_spacing
     end_position = ((num_beams)/2)*beam_spacing
@@ -116,16 +143,19 @@ def calc_axial_position(c, fs, axial_samples):
     :param axial_samples: number of samples in depth
     :returns: axial (list), total_depth (float)
     """
-
     import numpy as np
+    log.debug("Calculating axial dimension for output image")
 
     try:
         delta_t = 1/fs
     except ZeroDivisionError:
-        print('Input Parameter Error! Improbable sampling frequency')
+        errmsg = "Input Parameter Error! Improbable sampling frequency"
+        print(errmsg)
+        log.error(errmsg)
+        # raise ZeroDivisionError
         return 0.0, 0.0
 
-    distance_btw_sample = c*delta_t
+    distance_btw_sample = c*delta_t/2
 
     start_position = 0
     end_position = distance_btw_sample*(axial_samples)
@@ -145,6 +175,8 @@ def rectify(beam, rtype='full'):
     :param str rtype: type of rectification to be done (full or half)
     :return list beam: rectified beam of RF data
     """
+    log.debug("Rectifying RF beam")
+
     if rtype == 'full':
         for i, v in enumerate(beam):
             if v < 0:
@@ -154,7 +186,9 @@ def rectify(beam, rtype='full'):
             if v < 0:
                 beam[i] = 0
     else:
-        print("Invalid param rtype. Value must be 'full' or 'half'.\n")
+        errmsg = "Invalid param rtype. Value must be 'full' or 'half'.\n"
+        print(errmsg)
+        log.error(errmsg)
         raise ValueError
 
     return beam
@@ -168,9 +202,13 @@ def find_envelope(beam):
     :param float sf: smoothing factor for smoothing spline fit (0 =< sf <= 1)
     :return list envelope: an envelope of a beam of RF data
     """
+    log.debug("Finding envelope of RF beam")
+
     if min(beam) < 0:
-        print("Error. The input signal is not rectified, so running a full-wav\
-        e rectifier on it.\n")
+        wrnmsg = "Warning. The input signal is not rectified, so running a \
+        full-wave rectifier on it.\n"
+        print(wrnmsg)
+        log.warning(wrnmsg)
         beam = rectify(beam)
 
     from numpy import int16, ones, convolve
@@ -196,8 +234,97 @@ def log_comp(env_line):
     :param env_line: envelope of rf line (list)
     :returns: comp_line (list)
     """
+    log.debug("Performing logarithmic compresssion on RF envelope")
 
     data = [abs(x) for x in env_line]
     comp_line = [x**0.4 for x in data]
 
     return comp_line
+
+
+def plot_bmode(x_axis, y_axis, data):
+    """
+    Generate figure for B-mode image
+
+    :param x_axis: x axis (list)
+    :param y_axis: y axis (list)
+    :param data: data for b-mode display (2D matrix)
+    :return: fig
+    """
+    # import matplotlib
+    # matplotlib.use('Agg')
+    import matplotlib.pyplot as plt
+    import matplotlib.cm as cm
+
+    fig = plt.pcolormesh(x_axis, y_axis, data, cmap=cm.gray)
+    plt.title('B-mode Image')
+    plt.xlabel('Lateral Position (m)')
+    plt.ylabel('Depth (m)')
+    plt.axis([min(x_axis), max(x_axis), min(y_axis), max(y_axis)])
+    plt.axis('image')
+
+    return fig
+
+
+def save_bmode(fig, filename):
+    """
+    Save B-mode image
+
+    :param fig: figure for bmode
+    :param filename: filename (.png)
+    :return:
+    """
+
+    # import matplotlib
+    # matplotlib.use('Agg')
+    import re
+    import matplotlib.pyplot as plt
+
+    try:
+        plt.savefig(filename, bbox_inches='tight')
+    except ValueError:
+        print('Warning: Unable to save as specified extension '
+              '- save as PNG file')
+        regex = r"^(.*?)\..*"
+        filename = re.findall(regex, filename)
+        plt.savefig(filename[0], bbox_inches='tight')
+
+
+def display_bmode(fig, display):
+    """
+    Display B-mode image
+    :param fig: figure for b-mode image
+    :param display: display choice (True/False)
+    :return:
+    """
+
+    import matplotlib.pyplot as plt
+
+    if display is True:
+        plt.show(fig)
+    elif display is False:
+        pass
+    else:
+        print('Warning: Unable to process display input '
+              '- set to default (False)')
+        pass
+
+
+def reshape_matrix(matrix_in):
+    """
+    Reshape 2D B-mode matrix
+    :param matrix_in: input 2D matrix
+    :return: matrix_out
+    """
+    import numpy as np
+
+    # Check matrix size and dimension
+    matrix_size = np.shape(matrix_in)
+    matrix_ndim = len(matrix_size)
+    if matrix_ndim >2:
+        matrix_in = np.squeeze(matrix_in)
+
+    matrix_out = matrix_in.transpose()
+
+    return matrix_out
+
