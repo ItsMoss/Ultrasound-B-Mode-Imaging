@@ -43,6 +43,7 @@ def main():
         if byte_n == -1:
             return
 
+        
         # 5. Rectify Beam
         rf_beam = us.rectify(rf_beam)
 

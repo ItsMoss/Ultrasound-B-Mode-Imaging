@@ -34,16 +34,35 @@ def remove_nans(a_list):
     return int_list
 
 
-def listAdd(a_list, addend):
+def listOperation(a_list, operation, n):
     """
-    Adds a number to every element in a list (assuming list only contains nums)
+    Add, subtract, multiply, or divide a number to every element in a list
+    (assuming list only contains nums)
 
     :param list a_list: a list of all numbers
-    :param float addend: number to be added to each element in list
-    :return list a_list: incremented list
+    :param str operation: operation to be performed (ie '+', '-', '*', or '/')
+    :param float n: operand to each element in list
+    :return list a_list: resulting list
     """
-    for i, _ in enumerate(a_list):
-        a_list[i] += addend
+    if operation == '+':
+        for i, _ in enumerate(a_list):
+            a_list[i] += n
+
+    elif operation == '-':
+        for i, _ in enumerate(a_list):
+            a_list[i] -= n
+
+    elif operation == '*':
+        for i, _ in enumerate(a_list):
+            a_list[i] *= n
+
+    elif operation == '/':
+        for i, _ in enumerate(a_list):
+            a_list[i] /= n
+
+    else:
+        print("Error. Invalid input operation.\n")
+        raise ValueError
 
     return a_list
 
