@@ -319,6 +319,22 @@ def test_save_img():
     output = os.path.isfile('test2.png')
     assert output is True
 
+    # Case 3
+    checkfile = os.path.isfile('test3.png')
+    if checkfile is True:
+        os.remove('test3.png')
+    us.save_bmode(fig, 'test3.abc')
+    output = os.path.isfile('test3.png')
+    assert output is True
+
+    # Case 4
+    checkfile = os.path.isfile('test4.png')
+    if checkfile is True:
+        os.remove('test4.png')
+    us.save_bmode(fig, 'test4.pdf')
+    output = os.path.isfile('test4.pdf')
+    assert output is True
+
 
 def test_reshape_matrix():
     import numpy as np
@@ -390,3 +406,21 @@ def test_reshape_matrix():
 
     assert nrow_in == ncolumn_out
     assert nrow_out == ncolumn_in
+
+
+
+import pytest
+@pytest.mark.mpl_image_compare
+def test_plot_basic():
+
+    import numpy as np
+
+    data = np.zeros((100, 100))
+    line = np.array(range(1, 101))
+    for i in range(0, 100):
+        data[i] = line
+
+    x = np.linspace(1, 10, 100)
+    y = np.linspace(1, 10, 100)
+
+    return us.plot_bmode(x, y, data)
