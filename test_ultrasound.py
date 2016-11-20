@@ -2,6 +2,8 @@ import ultrasound as us
 import helpers as helps
 from numpy import arange
 from random import randrange
+import matplotlib
+matplotlib.use('Agg')
 
 
 def test_read_jsonfile():
