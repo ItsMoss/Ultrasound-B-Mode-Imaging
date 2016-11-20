@@ -103,12 +103,6 @@ def parse_main():
 
     par.add_argument("--save",
                      dest="save",
-                     help="Save PNG image (default: True)",
-                     type=bool,
-                     default=True)
-
-    par.add_argument("--save_filename",
-                     dest="save_filename",
                      help="Filename to save a PNG file of B-mode Image "
                           "(default: bmode.png)",
                      type=str,
@@ -272,12 +266,11 @@ def plot_bmode(x_axis, y_axis, data):
     return fig
 
 
-def save_bmode(fig, save, filename):
+def save_bmode(fig, filename):
     """
     Save B-mode image
 
     :param fig: figure for bmode
-    :param save: save image (True/False)
     :param filename: filename (.png)
     :return:
     """
@@ -287,21 +280,14 @@ def save_bmode(fig, save, filename):
     import re
     import matplotlib.pyplot as plt
 
-    if save is True:
-        try:
-            plt.savefig(filename, bbox_inches='tight')
-        except ValueError:
-            print('Warning: Unable to save as specified extension '
-                  '- save as PNG file')
-            regex = r"^(.*?)\..*"
-            filename = re.findall(regex, filename)
-            plt.savefig(filename[0], bbox_inches='tight')
-    elif save is False:
-        pass
-    else:
-        print('Warning: Unable to process save input '
-              '- set to default (False)')
-        pass
+    try:
+        plt.savefig(filename, bbox_inches='tight')
+    except ValueError:
+        print('Warning: Unable to save as specified extension '
+              '- save as PNG file')
+        regex = r"^(.*?)\..*"
+        filename = re.findall(regex, filename)
+        plt.savefig(filename[0], bbox_inches='tight')
 
 
 def display_bmode(fig, display):

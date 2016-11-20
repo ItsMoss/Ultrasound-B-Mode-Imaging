@@ -14,7 +14,6 @@ def main():
     log_level = main_args.log_level
     display = main_args.display
     save = main_args.save
-    save_filename = main_args.save_filename
 
     # Start Logging
     helps.init_log_file("b_mode_us", "BME590 Assignment 05", log_level)
@@ -68,7 +67,7 @@ def main():
 
     # C. Plot/Save/Display Image
     fig = us.plot_bmode(x_axis, y_axis, bmode_data)
-    us.save_bmode(fig, save, save_filename)
+    us.save_bmode(fig, save)
     us.display_bmode(fig, display)
 
     log.info("EXIT SUCCESS")

@@ -97,12 +97,12 @@ def test_calc_axial():
     """
 
     [ax1, total_depth1] = us.calc_axial_position(1, 100, 10)
-    assert ax1 == [0.00, 0.01, 0.02, 0.03, 0.04, 0.05, 0.06, 0.07, 0.08, 0.09]
-    assert total_depth1 == 0.09
+    assert ax1 == [0.00, 0.005, 0.01, 0.015, 0.02, 0.025, 0.03, 0.035, 0.04, 0.045]
+    assert total_depth1 == 0.045
 
     [ax2, total_depth2] = us.calc_axial_position(0.5, 50, 10)
-    assert ax2 == [0.00, 0.01, 0.02, 0.03, 0.04, 0.05, 0.06, 0.07, 0.08, 0.09]
-    assert total_depth2 == 0.09
+    assert ax2 == [0.00, 0.005, 0.01, 0.015, 0.02, 0.025, 0.03, 0.035, 0.04, 0.045]
+    assert total_depth2 == 0.045
 
     [ax3, total_depth3] = us.calc_axial_position(1, 0, 10)
     assert ax3 == 0.0
@@ -307,7 +307,7 @@ def test_save_img():
     checkfile = os.path.isfile('test1.png')
     if checkfile is True:
         os.remove('test1.png')
-    us.save_bmode(fig, True, 'test1.png')
+    us.save_bmode(fig, 'test1.png')
     output = os.path.isfile('test1.png')
     assert output is True
 
@@ -315,25 +315,9 @@ def test_save_img():
     checkfile = os.path.isfile('test2.png')
     if checkfile is True:
         os.remove('test2.png')
-    us.save_bmode(fig, True, 'test2')
+    us.save_bmode(fig, 'test2')
     output = os.path.isfile('test2.png')
     assert output is True
-
-    # Case3
-    checkfile = os.path.isfile('test4.png')
-    if checkfile is True:
-        os.remove('test4.png')
-    us.save_bmode(fig, False, 'test4.png')
-    output = os.path.isfile('test4.png')
-    assert output is False
-
-    # Case4
-    checkfile = os.path.isfile('test5.png')
-    if checkfile is True:
-        os.remove('test5.png')
-    us.save_bmode(fig, 'F', 'test5.png')
-    output = os.path.isfile('test5.png')
-    assert output is False
 
 
 def test_reshape_matrix():
