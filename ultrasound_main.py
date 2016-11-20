@@ -11,6 +11,9 @@ def main():
     json_file = main_args.json_filename
     rf_file = main_args.rf_filename
     log_level = main_args.log_level
+    display = main_args.display
+    save = main_args.save
+    save_filename = main_args.save_filename
 
     # Start Logging
     helps.init_log_file("b_mode_us", "BME590 Assignment 05", log_level)

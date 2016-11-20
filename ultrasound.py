@@ -95,6 +95,25 @@ def parse_main():
                      type=str,
                      default="DEBUG")
 
+    par.add_argument("--display",
+                     dest="display",
+                     help="Display B-mode Image (default: False)",
+                     type=bool,
+                     default=False)
+
+    par.add_argument("--save",
+                     dest="save",
+                     help="Save PNG image (default: True)",
+                     type=bool,
+                     default=True)
+
+    par.add_argument("--save_filename",
+                     dest="save_filename",
+                     help="Filename to save a PNG file of B-mode Image "
+                          "(default: bmode.png)",
+                     type=str,
+                     default='bmode.png')
+
     args = par.parse_args()
 
     return args
