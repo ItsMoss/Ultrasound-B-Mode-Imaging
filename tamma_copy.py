@@ -167,8 +167,8 @@ def plot_bmode(x_axis, y_axis, data):
     :param data: data for b-mode display (2D matrix)
     :return: fig
     """
-    # import matplotlib
-    # matplotlib.use('Agg')
+    import matplotlib
+    matplotlib.use('Agg')
     import matplotlib.pyplot as plt
     import matplotlib.cm as cm
 
