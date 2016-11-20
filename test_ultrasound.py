@@ -97,12 +97,12 @@ def test_calc_axial():
     """
 
     [ax1, total_depth1] = us.calc_axial_position(1, 100, 10)
-    assert ax1 == [0.00, 0.01, 0.02, 0.03, 0.04, 0.05, 0.06, 0.07, 0.08, 0.09]
-    assert total_depth1 == 0.09
+    assert ax1 == [0.00, 0.005, 0.01, 0.015, 0.02, 0.025, 0.03, 0.035, 0.04, 0.045]
+    assert total_depth1 == 0.045
 
     [ax2, total_depth2] = us.calc_axial_position(0.5, 50, 10)
-    assert ax2 == [0.00, 0.01, 0.02, 0.03, 0.04, 0.05, 0.06, 0.07, 0.08, 0.09]
-    assert total_depth2 == 0.09
+    assert ax2 == [0.00, 0.005, 0.01, 0.015, 0.02, 0.025, 0.03, 0.035, 0.04, 0.045]
+    assert total_depth2 == 0.045
 
     [ax3, total_depth3] = us.calc_axial_position(1, 0, 10)
     assert ax3 == 0.0
@@ -271,17 +271,122 @@ def test_log_comp():
     import tamma_copy as tc
     import numpy as np
 
-    output1 = tc.log_comp([1, 10, 100, 1000, 10000])
+    output1 = us.log_comp([1, 10, 100, 1000, 10000])
     out1 = [1.0, 2.51188643150958, 6.309573444801933,
             15.848931924611136, 39.810717055349734]
     assert np.array_equal(output1, out1)
 
-    output2 = tc.log_comp([-1, -10, -100, -1000, -10000])
+    output2 = us.log_comp([-1, -10, -100, -1000, -10000])
     out2 = [1.0, 2.51188643150958, 6.309573444801933,
             15.848931924611136, 39.810717055349734]
     assert np.array_equal(output2, out2)
 
-    output3 = tc.log_comp([0, 10, 100, 1000, 10000])
+    output3 = us.log_comp([0, 10, 100, 1000, 10000])
     out3 = [0.0, 2.51188643150958, 6.309573444801933,
             15.848931924611136, 39.810717055349734]
     assert np.array_equal(output3, out3)
+
+
+
+def test_save_img():
+
+    import numpy as np
+    import os
+
+    data = np.zeros((100, 100))
+    line = np.array(range(1, 101))
+    for i in range(0, 100):
+        data[i] = line
+
+    xaxis = np.linspace(1, 10, 100)
+    yaxis = np.linspace(1, 10, 100)
+
+    fig = us.plot_bmode(xaxis, yaxis, data)
+
+    # Case 1
+    checkfile = os.path.isfile('test1.png')
+    if checkfile is True:
+        os.remove('test1.png')
+    us.save_bmode(fig, 'test1.png')
+    output = os.path.isfile('test1.png')
+    assert output is True
+
+    # Case 2
+    checkfile = os.path.isfile('test2.png')
+    if checkfile is True:
+        os.remove('test2.png')
+    us.save_bmode(fig, 'test2')
+    output = os.path.isfile('test2.png')
+    assert output is True
+
+
+def test_reshape_matrix():
+    import numpy as np
+
+    # Case 1
+    data = np.zeros((5, 10))
+    data_size = np.shape(data)
+    nrow_in = data_size[0]
+    ncolumn_in = data_size[1]
+
+    output = us.reshape_matrix(data)
+    output_size = np.shape(output)
+    nrow_out = output_size[0]
+    ncolumn_out = output_size[1]
+
+    assert nrow_in == ncolumn_out
+    assert nrow_out == ncolumn_in
+
+    # Case 2
+    data = np.zeros((1, 10))
+    data_size = np.shape(data)
+    nrow_in = data_size[0]
+    ncolumn_in = data_size[1]
+
+    output = us.reshape_matrix(data)
+    output_size = np.shape(output)
+    nrow_out = output_size[0]
+    ncolumn_out = output_size[1]
+
+    assert nrow_in == ncolumn_out
+    assert nrow_out == ncolumn_in
+
+    # Case 3
+    data = np.zeros((5, 1))
+    data_size = np.shape(data)
+    nrow_in = data_size[0]
+    ncolumn_in = data_size[1]
+
+    output = us.reshape_matrix(data)
+    output_size = np.shape(output)
+    nrow_out = output_size[0]
+    ncolumn_out = output_size[1]
+
+    assert nrow_in == ncolumn_out
+    assert nrow_out == ncolumn_in
+
+    # Case 4
+    data = np.zeros((5, 10))
+    line = np.array(range(1, 11))
+    for i in range(0, 5):
+        data[i] = line
+    data_row1 = data[0]
+
+    output = us.reshape_matrix(data)
+    output_row1 = output[...,0]
+
+    assert np.array_equal(data_row1, output_row1)
+
+    # Case 5
+    data = np.zeros((5, 1, 10))
+    data_size = np.shape(data)
+    nrow_in = data_size[0]
+    ncolumn_in = data_size[2]
+
+    output = us.reshape_matrix(data)
+    output_size = np.shape(output)
+    nrow_out = output_size[0]
+    ncolumn_out = output_size[1]
+
+    assert nrow_in == ncolumn_out
+    assert nrow_out == ncolumn_in

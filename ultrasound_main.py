@@ -3,6 +3,7 @@ import ultrasound as us
 import helpers as helps
 from numpy import array
 import logging as log
+import matplotlib.pyplot as plt
 
 
 def main():
@@ -11,6 +12,8 @@ def main():
     json_file = main_args.json_filename
     rf_file = main_args.rf_filename
     log_level = main_args.log_level
+    display = main_args.display
+    save = main_args.save
 
     # Start Logging
     helps.init_log_file("b_mode_us", "BME590 Assignment 05", log_level)
@@ -54,13 +57,18 @@ def main():
 
     # 9. Output
     # A. Reshape Matrix
+    bmode_data = us.reshape_matrix(image_matrix)
+
     # B. Axes Calculations
     x_axis, x_len = us.calc_lat_position(beam_spacing, n_beams)
     log.info("X Length = %.5f m", x_len)
     y_axis, y_len = us.calc_axial_position(c, Fs, axial_samples)
     log.info("Y Length = %.5f m", y_len)
 
-    print("Output would be produced here.\n")
+    # C. Plot/Save/Display Image
+    fig = us.plot_bmode(x_axis, y_axis, bmode_data)
+    us.save_bmode(fig, save)
+    us.display_bmode(fig, display)
 
     log.info("EXIT SUCCESS")
 
