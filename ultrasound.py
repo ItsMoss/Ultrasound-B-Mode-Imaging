@@ -286,6 +286,9 @@ def save_bmode(fig, filename):
         regex = r"^(.*?)\..*"
         filename = re.findall(regex, filename)
         plt.savefig(filename[0], bbox_inches='tight')
+    except OSError:
+        print('Warning: Run out of space - cannot save the image')
+        pass
 
 
 def display_bmode(fig, display):
