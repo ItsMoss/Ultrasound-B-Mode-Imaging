@@ -1,9 +1,9 @@
 # Assignment 05
 ## B-Mode Ultrasound Imaging
-## Authors: Moseph Jackson-Atogi, Tamma Ketsiri
+Authors: Moseph Jackson-Atogi, Tamma Ketsiri
 
 ### File Descriptions:
-+ `ultrasound_main.py` - *main* file that runs B-Mode imaging program
++ `ultrasound_main.py` - **main** file that runs B-Mode imaging program
 + `ultrasound.py` - file containing all function definitions used in main program
 + `helpers.py` - file containing various helper functions used in main program
 + `test_ultrasound.py` - file containing all unit tests for main program
@@ -17,10 +17,6 @@
 + `docs/` - folder containing all Sphinx documentation
 
 ### Running Program
-To run this program simply run `ultrasound_main.py` from the terminal. Use -h \
-option to see what command line arguments are taken and what default values are.\
-Note that a log file named `b_mode_us.log` will be auto-generated with information \
-regarding the status of the program, as well as values of important variables. \
-A command line argument can be passed to determine the level of logging desired.
+To run this program simply run `ultrasound_main.py` from the terminal. Use -h option to see what command line arguments are taken and what default values are. Note that a log file named `b_mode_us.log` will be auto-generated with information regarding the status of the program, as well as values of important variables. A command line argument can be passed to determine the level of logging desired.
 
 ### Happy Thanksgiving
