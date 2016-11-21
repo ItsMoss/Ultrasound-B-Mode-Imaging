@@ -230,6 +230,7 @@ def find_envelope(beam):
         for i, v in enumerate(envelope):
             envelope[i] = v / env_max * beam_max
     except ZeroDivisionError:
+        log.debug("ZeroDivisionError occurred while generting envelope.")
         envelope = helps.listOperation(envelope, '+', beam_max)
 
     return envelope
@@ -259,10 +260,11 @@ def plot_bmode(x_axis, y_axis, data):
     :param ndarray data: data for b-mode display (2D matrix)
     :return Figure fig: resulting figure
     """
-
     from matplotlib.pyplot import figure, pcolormesh, title, xlabel, ylabel
     from matplotlib.pyplot import axis
     from matplotlib.cm import gray
+
+    log.debug("Generating B-Mode image")
 
     fig = figure()
     pcolormesh(x_axis, y_axis, data, cmap=gray)
@@ -285,16 +287,22 @@ def save_bmode(fig, filename):
     from re import findall
     from matplotlib.pyplot import savefig
 
+    log.debug("Saving B-Mode image")
+
     try:
         savefig(filename, bbox_inches='tight')
     except ValueError:
-        print('Warning: Unable to save as specified extension '
-              '- save as PNG file')
+        wrnmsg = "Warning: Unable to save as specified extension. Save as \
+        .png file"
+        print(wrnmsg)
+        log.warning(wrnmsg)
         regex = r"^(.*?)\..*"
         filename = findall(regex, filename)
         savefig(filename[0], bbox_inches='tight')
     except OSError:
-        print('Warning: Run out of space - cannot save the image')
+        wrnmsg = "Warning: Run out of space - cannot save the image"
+        print(wrnmsg)
+        log.warning(wrnmsg)
         pass
 
 
@@ -307,13 +315,17 @@ def display_bmode(fig, display):
     """
     from matplotlib.pyplot import show
 
+    log.debug("Displaying B-Mode image")
+
     if display is True:
         show(fig)
     elif display is False:
         pass
     else:
-        print('Warning: Unable to process display input '
-              '- set to default (False)')
+        wrnmsg = "Warning: Unable to process display input, should be True\
+        or False"
+        print(wrnmsg)
+        log.warning(wrnmsg)
         pass
 
 
@@ -325,6 +337,8 @@ def reshape_matrix(matrix_in):
     :return ndarray matrix_out: transposed version of input 2D matrix
     """
     from numpy import shape, squeeze
+
+    log.debug("Reshaping 2-D image matrix")
 
     # Check matrix size and dimension
     matrix_size = shape(matrix_in)
