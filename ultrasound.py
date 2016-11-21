@@ -7,7 +7,7 @@ def read_jsonfile(infile):
     Read data parameters from json file
 
     :param str infile: input json filename
-    :returns: c, fs, axial_samples, beam_spacing, num_beams
+    :return dict params: contains all parsed key-value pairs from JSON object
     """
     from json import load
     log.debug("Reading input JSON file")
@@ -68,7 +68,7 @@ def parse_main():
     This function sets default values or accepts user inputs for the variables
     in main function
 
-    :returns: args
+    :return dict args: contains all key-value pairs of command line arguments
     """
     import argparse as ap
 
@@ -119,7 +119,8 @@ def calc_lat_position(beam_spacing, num_beams):
 
     :param beam_spacing: spacing between lateral beams (m)
     :param num_beams: number of lateral beams
-    :returns: lateral (list), total_lateral (float)
+    :return ndarray lateral: array of lateral dimension measurements (m)
+    :return float total_lateral: maximum measurement in lateral dimension
     """
     import numpy as np
     log.debug("Calculating lateral dimension for output image")
@@ -138,12 +139,13 @@ def calc_axial_position(c, fs, axial_samples):
     """
     Calculate axial position and length
 
-    :param c: souns speed (m/s)
-    :param fs: sampling frequency (Hz)
-    :param axial_samples: number of samples in depth
-    :returns: axial (list), total_depth (float)
+    :param int c: sound speed (m/s)
+    :param int fs: sampling frequency (Hz)
+    :param int axial_samples: number of samples in depth
+    :return list axial: array of axial dimension measurements (m)
+    :return float total_depth: maximum measurement in axial dimension
     """
-    import numpy as np
+    from numpy import arange
     log.debug("Calculating axial dimension for output image")
 
     try:
@@ -159,7 +161,7 @@ def calc_axial_position(c, fs, axial_samples):
 
     start_position = 0
     end_position = distance_btw_sample*(axial_samples)
-    ax = np.arange(start_position, end_position, distance_btw_sample)
+    ax = arange(start_position, end_position, distance_btw_sample)
     axial = ax.tolist()
 
     total_depth = float((axial_samples-1)*distance_btw_sample)
@@ -237,8 +239,8 @@ def log_comp(env_line):
     """
     Perform logarithmic compression on envelope line
 
-    :param env_line: envelope of rf line (list)
-    :returns: comp_line (list)
+    :param list env_line: envelope of RF line
+    :return list comp_line: compressed envelope of RF data
     """
     log.debug("Performing logarithmic compresssion on RF envelope")
 
@@ -252,22 +254,23 @@ def plot_bmode(x_axis, y_axis, data):
     """
     Generate figure for B-mode image
 
-    :param x_axis: x axis (list)
-    :param y_axis: y axis (list)
-    :param data: data for b-mode display (2D matrix)
-    :return: fig
+    :param ndarray x_axis: x axis values
+    :param ndarray y_axis: y axis values
+    :param ndarray data: data for b-mode display (2D matrix)
+    :return Figure fig: resulting figure
     """
 
-    import matplotlib.pyplot as plt
-    import matplotlib.cm as cm
+    from matplotlib.pyplot import figure, pcolormesh, title, xlabel, ylabel
+    from matplotlib.pyplot import axis
+    from matplotlib.cm import gray
 
-    fig = plt.figure()
-    plt.pcolormesh(x_axis, y_axis, data, cmap=cm.gray)
-    plt.title('B-mode Image')
-    plt.xlabel('Lateral Position (m)')
-    plt.ylabel('Depth (m)')
-    plt.axis([min(x_axis), max(x_axis), min(y_axis), max(y_axis)])
-    plt.axis('image')
+    fig = figure()
+    pcolormesh(x_axis, y_axis, data, cmap=gray)
+    title('B-mode Image')
+    xlabel('Lateral Position (m)')
+    ylabel('Depth (m)')
+    axis([min(x_axis), max(x_axis), min(y_axis), max(y_axis)])
+    axis('image')
 
     return fig
 
@@ -276,22 +279,20 @@ def save_bmode(fig, filename):
     """
     Save B-mode image
 
-    :param fig: figure for bmode
-    :param filename: filename (.png)
-    :return:
+    :param Figure fig: figure for bmode image
+    :param str filename: filename (.png)
     """
-
-    import re
-    import matplotlib.pyplot as plt
+    from re import findall
+    from matplotlib.pyplot import savefig
 
     try:
-        plt.savefig(filename, bbox_inches='tight')
+        savefig(filename, bbox_inches='tight')
     except ValueError:
         print('Warning: Unable to save as specified extension '
               '- save as PNG file')
         regex = r"^(.*?)\..*"
-        filename = re.findall(regex, filename)
-        plt.savefig(filename[0], bbox_inches='tight')
+        filename = findall(regex, filename)
+        savefig(filename[0], bbox_inches='tight')
     except OSError:
         print('Warning: Run out of space - cannot save the image')
         pass
@@ -300,15 +301,14 @@ def save_bmode(fig, filename):
 def display_bmode(fig, display):
     """
     Display B-mode image
-    :param fig: figure for b-mode image
-    :param display: display choice (True/False)
-    :return:
-    """
 
-    import matplotlib.pyplot as plt
+    :param fig: figure for b-mode image
+    :param ble display: display choice
+    """
+    from matplotlib.pyplot import show
 
     if display is True:
-        plt.show(fig)
+        show(fig)
     elif display is False:
         pass
     else:
@@ -320,18 +320,19 @@ def display_bmode(fig, display):
 def reshape_matrix(matrix_in):
     """
     Reshape 2D B-mode matrix
-    :param matrix_in: input 2D matrix
-    :return: matrix_out
+
+    :param ndarray matrix_in: input 2D matrix
+    :return ndarray matrix_out: transposed version of input 2D matrix
     """
-    import numpy as np
+    from numpy import shape, squeeze
 
     # Check matrix size and dimension
-    matrix_size = np.shape(matrix_in)
+    matrix_size = shape(matrix_in)
     matrix_ndim = len(matrix_size)
-    if matrix_ndim >2:
-        matrix_in = np.squeeze(matrix_in)
+
+    if matrix_ndim > 2:
+        matrix_in = squeeze(matrix_in)
 
     matrix_out = matrix_in.transpose()
 
     return matrix_out
-

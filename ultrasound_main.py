@@ -3,7 +3,6 @@ import ultrasound as us
 import helpers as helps
 from numpy import array
 import logging as log
-import matplotlib.pyplot as plt
 
 
 def main():
@@ -42,7 +41,7 @@ def main():
         # Error handling
         if byte_n == -1:
             return
-        
+
         # 5. Rectify Beam
         rf_beam = us.rectify(rf_beam)
 
