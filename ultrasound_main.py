@@ -69,7 +69,7 @@ def main():
     us.save_bmode(fig, save)
     us.display_bmode(fig, display)
 
-    log.info("EXIT SUCCESS")
+    log.info("EXIT SUCCESS\n")
 
 
 if __name__ == "__main__":
